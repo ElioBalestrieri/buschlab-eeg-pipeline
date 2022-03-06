@@ -2,15 +2,15 @@
 clear; clc; close all
 
 restoredefaultpath
-prefs = get_prefs('eeglab_all', 1);
-cfg   = get_cfg;
+prefs = get_prefs_alphaNoise('eeglab_all', 1);
+cfg   = get_cfg_alphaNoise;
 
 % ------------------------------------------------------------------------
 % **Important**: these variables determine which data files are used as
 % input and output. 
 suffix_in  = 'prep1';
 suffix_out = 'ica';
-do_overwrite = false;
+do_overwrite = true;
 % ------------------------------------------------------------------------
 
 subjects = get_list_of_subjects(cfg.dir, do_overwrite, suffix_in, suffix_out);
@@ -32,8 +32,7 @@ addpath(genpath([add_dir.folder, filesep, add_dir.name, filesep]));
 nthreads = min([prefs.max_threads, length(subjects)]);
 parfor(isub = 1:length(subjects), nthreads) % set nthreads to 0 for normal for loop.
     % for isub = 1%:length(subjects)
-    
-    
+   
     % --------------------------------------------------------------
     % Load the dataset.
     % --------------------------------------------------------------
@@ -54,9 +53,7 @@ parfor(isub = 1:length(subjects), nthreads) % set nthreads to 0 for normal for l
     % save the ICA weights produced with the hp-filtered data.
     % --------------------------------------------------------------
     if cfg.ica.do_ICA_hp_filter
-        
-        
-        
+      
         nonhpEEG = EEG;
         switch(cfg.ica.hp_ICA_filter_type)
             case('butterworth')

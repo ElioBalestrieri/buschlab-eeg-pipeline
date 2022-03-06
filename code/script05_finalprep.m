@@ -2,23 +2,23 @@
 clear; clc; close all
 
 restoredefaultpath
-prefs = get_prefs('eeglab_all', 0); 
-cfg   = get_cfg;
+prefs = get_prefs_alphaNoise('eeglab_all', 0); 
+cfg   = get_cfg_alphaNoise;
 
 % ------------------------------------------------------------------------
 % **Important**: these variables determine which data files are used as
 % input and output. 
 suffix_in  = 'icaclean';
 suffix_out = 'final';
-do_overwrite = false;
+do_overwrite = true;
 % ------------------------------------------------------------------------
 
 subjects = get_list_of_subjects(cfg.dir, do_overwrite, suffix_in, suffix_out);
 
 %% Run across subjects.
-nthreads = min([1, prefs.max_threads, length(subjects)]);
+nthreads = min([prefs.max_threads, length(subjects)]);
 parfor(isub = 1:length(subjects), nthreads)
-% for isub = 1%:length(subjects)
+% for isub = 1:length(subjects)
     
     % --------------------------------------------------------------
     % Load the dataset and initialize the list of bad ICs.
@@ -47,8 +47,12 @@ parfor(isub = 1:length(subjects), nthreads)
         -cfg.final.rejthresh_post_ica, cfg.final.rejthresh_post_ica, ...
         EEG.xmin, EEG.xmax, 1, 1);
     
-    EEG.rejected_trials = [EEG.rejected_trials i];
+    EEG.rejected_trials_afterICA = i;
     
+
+    % have a fast check that everything's fine
+    EEG = sanity_check_coregister(EEG);
+    doublecheck(EEG)
     
     % --------------------------------------------------------------
     % Save data.

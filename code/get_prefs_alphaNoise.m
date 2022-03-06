@@ -1,4 +1,4 @@
-function [prefs] = get_prefs(eeglab_level, load_fieldtrip)
+function [prefs] = get_prefs_alphaNoise(eeglab_level, load_fieldtrip)
 % This function adds machine-specific settings, i.e. paths to relevant
 % folders and other settings such as maximum number of cores for
 % parfor loops.
@@ -46,7 +46,7 @@ switch(strip(computername))
     case 'BUSCHD30'
         dir_toolboxes = '/data5/Elio/Niko-prep/tools/';
 %         dir_myutils = 'C:\Users\nbusch\Documents\GitHub Repos\Tools\My-utilities\';
-        prefs.max_threads = maxThreads - 1;
+        prefs.max_threads = maxThreads-1;
 
         
 end
@@ -89,5 +89,5 @@ addpath(genpath([dir_toolboxes, 'rosa-elektro-pipe']));
 addpath([dir_toolboxes, 'eeglab2019_1', '/plugins/fileio'])
 
 % Folder with Niko's utility functions.
-addpath(genpath(dir_myutils))
+addpath('alphaNoise_func')
 

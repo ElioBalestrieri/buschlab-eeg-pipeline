@@ -2,15 +2,15 @@
 clear; clc; close all
 
 restoredefaultpath
-prefs = get_prefs('eeglab_all', 1);
-cfg   = get_cfg;
+prefs = get_prefs_alphaNoise('eeglab_all', 1);
+cfg   = get_cfg_alphaNoise;
 
 % ------------------------------------------------------------------------
 % **Important**: these variables determine which data files are used as
 % input and output. 
 suffix_in  = 'ica';
 suffix_out = 'icaclean';
-do_overwrite = false;
+do_overwrite = true;
 % ------------------------------------------------------------------------
 
 subjects = get_list_of_subjects(cfg.dir, do_overwrite, suffix_in, suffix_out);
@@ -29,7 +29,7 @@ end
 %% Run across subjects.
 nthreads = min([prefs.max_threads, length(subjects)]);
 parfor(isub = 1:length(subjects), nthreads) % Use this if you do NOT use manual confirmation
-% for isub = 1%:length(subjects) % Use this if you want to manually inspect ICs.
+%for isub = 2%:length(subjects) % Use this if you want to manually inspect ICs.
     
     
     % --------------------------------------------------------------
@@ -75,7 +75,7 @@ parfor(isub = 1:length(subjects), nthreads) % Use this if you do NOT use manual 
     % --------------------------------------------------------------
     if cfg.icareject.do_iclabel==true
         fprintf('Detecting ICs with IClabel.\n')
-        [EEG, bad_ics_iclabel] = func_icareject_iclabel(EEG, cfg.icareject, bad_ics_eog);
+        [EEG, bad_ics_iclabel] = func_icareject_iclabel_EB(EEG, cfg.icareject, bad_ics_eog);
     end
     
     

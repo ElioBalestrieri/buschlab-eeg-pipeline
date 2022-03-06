@@ -2,15 +2,15 @@
 clear; clc; close all
 
 restoredefaultpath
-prefs = get_prefs('eeglab_all', 1);
-cfg   = get_cfg;
+prefs = get_prefs_alphaNoise('eeglab_all', 1);
+cfg   = get_cfg_alphaNoise;
 
 % ------------------------------------------------------------------------
 % **Important**: these variables determine which data files are used as
 % input and output. 
 suffix_in  = 'import';
 suffix_out = 'prep1';
-do_overwrite = false;
+do_overwrite = true;
 % ------------------------------------------------------------------------
 
 subjects = get_list_of_subjects(cfg.dir, do_overwrite, suffix_in, suffix_out);
@@ -35,6 +35,9 @@ parfor(isub = 1:length(subjects), nthreads) % set nthreads to 0 for normal for l
     % the un-baseline corrected data, because ICA likes that better.
     tmpeeg = pop_rmbase(EEG, [], []);
     
+    % select only EEG channels
+    % tmpeeg = pop_select(tmpeeg, 'channel', cfg.chans.EEGchans);
+
     % Reject trials with extreme amplitude values.
     [tmpeeg, ~] = pop_eegthresh(tmpeeg, 1, cfg.chans.EEGchans, ...
         -cfg.rej.rejthresh_pre_ica, cfg.rej.rejthresh_pre_ica, EEG.xmin, EEG.xmax, 1, 0);
