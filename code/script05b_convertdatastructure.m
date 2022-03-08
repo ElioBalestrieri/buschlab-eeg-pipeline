@@ -17,8 +17,8 @@ subjects = get_list_of_subjects(cfg.dir, do_overwrite, suffix_in, suffix_out);
 
 %% Run across subjects.
 nthreads = min([prefs.max_threads, length(subjects)]);
-% parfor(isub = 1:length(subjects), nthreads)
-for isub = 1:length(subjects)
+parfor(isub = 1:length(subjects), nthreads)
+% for isub = 1:length(subjects)
     
     % --------------------------------------------------------------
     % Load the dataset 

@@ -12,6 +12,9 @@ function split_datasets_simple(cfg, EEG)
 base_tw = [-.2 0];
 new_tw = [-.2, 1.5] * 1e3; % times in ms
 channels = 1:64;
+% for poststim decode
+cfg_downsample.do_resampling = true;
+cfg_downsample.new_sampling_rate = 128;
 
 % parse subject name and define output folder
 subjname = EEG.urname(1:4);
@@ -24,8 +27,12 @@ end
                  
 % baseline correction and time window/channel selection
 baseline_corrected = pop_rmbase(EEG, base_tw);
+baseline_corrected  = func_import_downsample(baseline_corrected , cfg_downsample);
+
 mask_time = ((baseline_corrected.times >= min(new_tw)) &...
              (baseline_corrected.times <= max(new_tw)));
+
+
 mat_data = baseline_corrected.data(channels, mask_time, :);
 time_vect = baseline_corrected.times(mask_time);
 logfile_table = struct2table(baseline_corrected.trialinfo);
